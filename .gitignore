@@ -1,0 +1,22 @@
+# Node modules
+node_modules/
+
+# Env file
+.env
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# OS / Editor junk
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Coverage (if using testing tools)
+coverage/
+
+# Build (if you ever bundle code)
+dist/
