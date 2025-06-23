@@ -48,6 +48,7 @@ export const registerModel = async (req, res) => {
       email: newModel.email,
       username: newModel.username,
       role: newModel.role,
+      profilePhoto: newModel.profilePhoto
     };
 
     res.status(201).json({
@@ -93,12 +94,36 @@ export const loginModel = async (req, res) => {
       email: user.email,
       username: user.username,
       role: user.role,
+      profilePhoto: user.profilePhoto
     };
 
     res.status(200).json({ message: 'Login successful', user: safeUser, token });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Server error' });
+  }
+};
+
+export const getModelById = async (req, res) => {
+  try {
+    const model = await ModelUser.findById(req.params.id).select('-password -confirmPassword');
+    if (!model) {
+      return res.status(404).json({ error: 'Model not found' });
+    }
+    res.status(200).json(model);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Server error' });
+  }
+};
+
+export const getAllModels = async (req, res) => {
+  try {
+    const models = await ModelUser.find().select('-password -confirmPassword');
+    res.status(200).json(models);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to fetch models' });
   }
 };
 

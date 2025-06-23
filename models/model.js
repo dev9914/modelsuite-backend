@@ -10,10 +10,16 @@ const modelSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  profilePhoto: String,
   dob: {
     type: Date,
     required: true,
   },
+  agencyId: {
+  type: mongoose.Schema.Types.ObjectId,
+  ref: 'Agency',
+  default: null
+},
   country: String,
   city: String,
   category: [String],

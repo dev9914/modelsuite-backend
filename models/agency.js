@@ -10,6 +10,7 @@ const agencySchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  profilePhoto: String,
   agencyEmail: {
     type: String,
     required: true,

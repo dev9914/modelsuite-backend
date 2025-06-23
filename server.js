@@ -13,8 +13,10 @@ app.use(express.json());
 // Rotues 
 import modelRoutes from './routes/modelRoutes.js';
 import agencyRoutes from './routes/agencyRoutes.js';
+import uploadRoutes from './routes/uploadRoutes.js';
 app.use('/api/v1/model', modelRoutes);
 app.use('/api/v1/agency', agencyRoutes);
+app.use('/api/v1/upload', uploadRoutes);
 
 
 app.listen(process.env.PORT, () => {

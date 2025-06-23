@@ -1,6 +1,7 @@
 import Agency from '../models/agency.js';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import ModelUser from '../models/model.js';
 
 export const registerAgency = async (req, res) => {
   try {
@@ -18,7 +19,8 @@ export const registerAgency = async (req, res) => {
       companySize,
       agencyType,
       certificate,
-      socialLink
+      socialLink,
+      profilePhoto,
     } = req.body;
 
     if (!agencyName || !agencyEmail || !username || !password || !confirmPassword) {
@@ -56,6 +58,7 @@ export const registerAgency = async (req, res) => {
       agencyType,
       certificate,
       socialLink,
+      profilePhoto
     });
 
     await newAgency.save();
@@ -72,6 +75,7 @@ export const registerAgency = async (req, res) => {
       username,
       agencyEmail,
       role: newAgency.role,
+      profilePhoto: newAgency.profilePhoto
     };
 
     res.status(201).json({
@@ -119,6 +123,7 @@ export const loginAgency = async (req, res) => {
       username: agency.username,
       agencyEmail: agency.agencyEmail,
       role: agency.role,
+      profilePhoto: agency.profilePhoto
     };
 
     res.status(200).json({
@@ -127,6 +132,62 @@ export const loginAgency = async (req, res) => {
       token,
     });
 
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Server error' });
+  }
+};
+
+export const searchModels = async (req, res) => {
+  const searchQuery = req.query.search;
+  const regex = new RegExp(searchQuery, "i"); // case-insensitive
+
+  const results = await ModelUser.find({
+    $or: [
+      { fullName: regex },
+      { username: regex },
+    ],
+  }).select("-password -confirmPassword");
+
+  res.status(200).json(results);
+};
+
+export const getAgencyModels = async (req, res) => {
+  try {
+    const agencyId = req.user.id; // from token
+    const models = await ModelUser.find({ agencyId }).select('-password -confirmPassword');
+    res.status(200).json(models);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to fetch agency models' });
+  }
+};
+
+export const addModelToAgency = async (req, res) => {
+  try {
+    const agencyId = req.user.id; // comes from token
+    const { modelId } = req.body;
+
+    if (!modelId) {
+      return res.status(400).json({ error: 'Model ID is required' });
+    }
+
+    // Check if model exists
+    const model = await ModelUser.findById(modelId);
+    if (!model) {
+      return res.status(404).json({ error: 'Model not found' });
+    }
+
+    // Optional: Check if already assigned
+    if (model.agencyId && model.agencyId.toString() === agencyId) {
+      return res.status(400).json({ error: 'Model already in your agency' });
+    }
+
+    // Assign agencyId
+    model.agencyId = agencyId;
+    await model.save();
+
+    res.status(200).json({ message: 'Model added to agency successfully', model });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Server error' });
