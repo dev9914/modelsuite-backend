@@ -32,7 +32,7 @@ const io = new Server(server, {
     origin: (origin, callback) => {
       const allowedOrigins = [
         'http://localhost:4000',
-        'https://modelsuite-frontend.vercel.app/'
+        'https://modelsuite-frontend.vercel.app '
       ];
 
       if (!origin || allowedOrigins.includes(origin)) {
