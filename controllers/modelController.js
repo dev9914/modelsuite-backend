@@ -94,7 +94,8 @@ export const loginModel = async (req, res) => {
       email: user.email,
       username: user.username,
       role: user.role,
-      profilePhoto: user.profilePhoto
+      profilePhoto: user.profilePhoto,
+      agencyId: user.agencyId
     };
 
     res.status(200).json({ message: 'Login successful', user: safeUser, token });
