@@ -9,7 +9,7 @@ const groupTopicMessageSchema = new mongoose.Schema({
   topicId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Topic',
-    default: null, // null if it's a default group chat
+    required: true
   },
   senderId: {
     type: mongoose.Schema.Types.ObjectId,

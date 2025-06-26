@@ -65,37 +65,52 @@ io.on('connection', (socket) => {
     console.log(`✅ Registered user ${userId} with socket ${socket.id}`);
   });
 
-  socket.on("join_room", ({ room }) => {
-  socket.join(room);
-  console.log(`✅ Socket ${socket.id} joined room ${room}`);
-});
+  // ✅ Join a topic room (not group anymore)
+  socket.on("join_topic", ({ topicId }) => {
+    if (topicId) {
+      socket.join(topicId);
+      console.log(`✅ Socket ${socket.id} joined topic ${topicId}`);
+    }
+  });
 
-socket.on("leave_room", ({ room }) => {
-  socket.leave(room);
-  console.log(`🚪 Socket ${socket.id} left room ${room}`);
-});
+  // ✅ Leave a topic room
+  socket.on("leave_topic", ({ topicId }) => {
+    if (topicId) {
+      socket.leave(topicId);
+      console.log(`🚪 Socket ${socket.id} left topic ${topicId}`);
+    }
+  });
 
-socket.on("send_group_message", async (newMessage) => {
-  console.log("📩 Received group message:", newMessage)
-  // Save to DB
-  try {
-    const saved = await groupTopicMessageModel.create({
-      groupId: newMessage.groupId,
-      senderId: newMessage.senderId,
-      senderModel: newMessage.senderModel,
-      text: newMessage.text,
-    });
+  // ✅ Send group message inside a topic
+  socket.on("send_group_message", async (newMessage) => {
+    console.log("📩 Received group message:", newMessage);
 
-    io.to(newMessage.groupId).emit("new_group_message", saved);
-  } catch (err) {
-    console.error("❌ Failed to save group message:", err.message);
-  }
-});
+    const { groupId, topicId, senderId, senderModel, text } = newMessage;
+
+    if (!groupId || !topicId || !senderId || !text) {
+      return console.error("❌ Missing message fields");
+    }
+
+    try {
+      const saved = await groupTopicMessageModel.create({
+        groupId,
+        topicId,
+        senderId,
+        senderModel,
+        text,
+      });
+
+      // Emit to topic room only
+      io.to(topicId.toString()).emit("new_group_message", saved);
+    } catch (err) {
+      console.error("❌ Failed to save group message:", err.message);
+    }
+  });
 
   // ✅ Handle all modular socket handlers
   registerSocketHandlers(io, socket, connectedUsers);
 
-  // ✅ Handle disconnect
+  // ✅ On user disconnect
   socket.on('disconnect', () => {
     for (let [userId, sockId] of connectedUsers.entries()) {
       if (sockId === socket.id) {
@@ -106,11 +121,12 @@ socket.on("send_group_message", async (newMessage) => {
     console.log('❌ Socket disconnected:', socket.id);
   });
 
+  // ✅ Cleanup all rooms
   socket.on('disconnecting', () => {
-  for (let room of socket.rooms) {
-    socket.leave(room);
-  }
-});
+    for (let room of socket.rooms) {
+      socket.leave(room);
+    }
+  });
 });
 
 // 🚀 Start the server
