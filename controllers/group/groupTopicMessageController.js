@@ -71,11 +71,17 @@ export const getGroupsByAgencyOrModel = async (req, res) => {
   try {
     const userId = req.user.id;
     const role = req.user.role;
+    const { modelId } = req.query;
 
     let groups;
 
     if (role === 'agency') {
-      groups = await Group.find({ agencyId: userId })
+      const query = { agencyId: userId };
+      if (modelId) {
+        query.modelId = modelId; // filter by specific model
+      }
+
+      groups = await Group.find(query)
         .populate('modelId', 'fullName profilePhoto')
         .lean();
     } else if (role === 'model') {
@@ -86,7 +92,7 @@ export const getGroupsByAgencyOrModel = async (req, res) => {
       return res.status(403).json({ error: 'Unauthorized role' });
     }
 
-    // Fetch and attach topics for each group
+    // Attach topics for each group
     for (let group of groups) {
       const topics = await Topic.find({ groupId: group._id }).select('_id title');
       group.topics = topics;
