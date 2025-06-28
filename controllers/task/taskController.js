@@ -18,7 +18,6 @@ export const createTask = async (req, res) => {
       category,
       priority,
       assignedTo,
-      escalation,
       shortDescription,
       description,
     } = req.body;
@@ -41,7 +40,6 @@ export const createTask = async (req, res) => {
       category,
       priority,
       assignedTo,
-      escalation,
       shortDescription,
       description,
     });
@@ -86,8 +84,8 @@ export const getTasksForModel = async (req, res) => {
 export const getTaskById = async (req, res) => {
   try {
     const task = await Task.findById(req.params.id)
-      .populate("requestedBy", "fullName")
-      .populate("requestedFor", "fullName")
+      .populate("requestedBy", "agencyName fullName")
+      .populate("requestedFor", "agencyName fullName")
       .populate("assignedTo", "fullName profilePhoto");
 
     if (!task) return res.status(404).json({ error: "Task not found" });
@@ -133,5 +131,35 @@ export const updateTaskStatusByModel = async (req, res) => {
   } catch (err) {
     console.error("Failed to update task status:", err);
     res.status(500).json({ error: "Failed to update task status" });
+  }
+};
+
+export const saveTaskAttachment = async (req, res) => {
+  try {
+    const { taskId } = req.params;
+    const { url, type, originalName } = req.body;
+
+    if (req.user.role !== "model") {
+      return res.status(403).json({ error: "Only models can upload attachments" });
+    }
+
+    const task = await Task.findById(taskId);
+    if (!task) return res.status(404).json({ error: "Task not found" });
+
+    const attachment = {
+      url,
+      type,
+      originalName,
+      uploadedBy: req.user.id,
+      uploadedAt: new Date(),
+    };
+
+    task.attachments.push(attachment);
+    await task.save();
+
+    res.status(200).json({ message: "Attachment saved", attachment });
+  } catch (err) {
+    console.error("Failed to save attachment:", err);
+    res.status(500).json({ error: "Attachment save failed" });
   }
 };

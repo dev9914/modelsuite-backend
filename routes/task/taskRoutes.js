@@ -1,5 +1,6 @@
 import express from "express";
-import { createTask, getAgencyTasks, getTaskById, getTasksForModel, updateTaskStatusByModel } from "../../controllers/task/taskController.js";
+import { createTask, getAgencyTasks, getTaskById, getTasksForModel, saveTaskAttachment, updateTaskStatusByModel } from "../../controllers/task/taskController.js";
+import {addCommentToTask, getCommentsForTask} from '../../controllers/task/commentController.js';
 import { verifyToken } from "../../middlewares/authMiddleware.js";
 
 const router = express.Router();
@@ -9,6 +10,8 @@ router.get("/my-tasks", verifyToken, getAgencyTasks);
 router.get("/model/:agencyId", verifyToken, getTasksForModel);
 router.get("/:id", verifyToken, getTaskById);
 router.put("/update-status/:taskId", verifyToken, updateTaskStatusByModel);
-
+router.post("/comment", verifyToken, addCommentToTask);
+router.get("/comment/:taskId", verifyToken, getCommentsForTask);
+router.post("/:taskId/attachments", verifyToken, saveTaskAttachment);
 
 export default router;

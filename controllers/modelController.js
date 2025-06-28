@@ -48,7 +48,8 @@ export const registerModel = async (req, res) => {
       email: newModel.email,
       username: newModel.username,
       role: newModel.role,
-      profilePhoto: newModel.profilePhoto
+      profilePhoto: newModel.profilePhoto,
+      city: newModel.city
     };
 
     res.status(201).json({
@@ -95,7 +96,8 @@ export const loginModel = async (req, res) => {
       username: user.username,
       role: user.role,
       profilePhoto: user.profilePhoto,
-      agencyId: user.agencyId
+      agencyId: user.agencyId,
+      city: user.city
     };
 
     res.status(200).json({ message: 'Login successful', user: safeUser, token });
