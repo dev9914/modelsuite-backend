@@ -137,19 +137,23 @@ export const updateTaskStatusByModel = async (req, res) => {
 export const saveTaskAttachment = async (req, res) => {
   try {
     const { taskId } = req.params;
-    const { url, type, originalName } = req.body;
+    const file = req.file;
 
     if (req.user.role !== "model") {
       return res.status(403).json({ error: "Only models can upload attachments" });
+    }
+
+    if (!file || !file.path || !file.mimetype) {
+      return res.status(400).json({ error: "File upload failed or file missing" });
     }
 
     const task = await Task.findById(taskId);
     if (!task) return res.status(404).json({ error: "Task not found" });
 
     const attachment = {
-      url,
-      type,
-      originalName,
+      url: file.path, // Cloudinary URL
+      type: file.mimetype,
+      originalName: file.originalname,
       uploadedBy: req.user.id,
       uploadedAt: new Date(),
     };

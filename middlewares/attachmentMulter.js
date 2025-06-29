@@ -6,15 +6,20 @@ import cloudinary from '../config/cloudinary.js';
 const attachmentStorage = new CloudinaryStorage({
   cloudinary,
   params: async (req, file) => {
-    let resourceType = 'raw'; // default for docs
+    // Always use raw for files like pdf/docx/txt
+    let resourceType = "raw";
 
-    if (file.mimetype.startsWith('image/')) resourceType = 'image';
-    else if (file.mimetype.startsWith('video/')) resourceType = 'video';
+    if (file.mimetype.startsWith("image/")) resourceType = "image";
+    else if (file.mimetype.startsWith("video/")) resourceType = "video";
+
+    // Remove file extension completely
+    const baseName = file.originalname.replace(/\.[^/.]+$/, "");
 
     return {
-      folder: 'modelsuite/attachments',
+      folder: "modelsuite/attachments",
       resource_type: resourceType,
-      allowed_formats: ['jpg', 'jpeg', 'png', 'mp4', 'mov', 'pdf', 'docx', 'txt'],
+      allowed_formats: ["jpg", "jpeg", "png", "mp4", "mov", "pdf", "docx", "txt"],
+      public_id: `${baseName}-${Date.now()}`, // no .pdf here
     };
   },
 });
