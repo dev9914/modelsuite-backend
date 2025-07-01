@@ -22,6 +22,9 @@ import agencyToModelMessageRoutes from './routes/message/agencyToModelMessageRou
 import topicRoutes from './routes/message/topicRoutes.js';
 import groupTopicMessageRoutes from './routes/message/groupTopicMessageRoutes.js';
 import pandaDocRoutes from "./routes/pandadocroutes.js";
+import taskRoutes from "./routes/task/taskRoutes.js";
+import instagramRoutes from './routes/socialMedia/instagramRoutes.js';
+
 app.use('/api/v1/model', modelRoutes);
 app.use('/api/v1/agency', agencyRoutes);
 app.use('/api/v1/upload', uploadRoutes);
@@ -29,6 +32,10 @@ app.use('/api/v1/messages/agency-to-model', agencyToModelMessageRoutes);
 app.use('/api/v1/topic', topicRoutes);
 app.use('/api/v1/messages/group', groupTopicMessageRoutes);
 app.use("/api/vi/panda", pandaDocRoutes);
+app.use("/api/v1/tasks", taskRoutes);
+app.use('/api/v1/instagram', instagramRoutes);
+
+
 
 // 🧠 Create HTTP Server
 const server = http.createServer(app);

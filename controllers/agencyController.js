@@ -75,7 +75,8 @@ export const registerAgency = async (req, res) => {
       username,
       agencyEmail,
       role: newAgency.role,
-      profilePhoto: newAgency.profilePhoto
+      profilePhoto: newAgency.profilePhoto,
+      city: newAgency.city
     };
 
     res.status(201).json({
@@ -123,7 +124,8 @@ export const loginAgency = async (req, res) => {
       username: agency.username,
       agencyEmail: agency.agencyEmail,
       role: agency.role,
-      profilePhoto: agency.profilePhoto
+      profilePhoto: agency.profilePhoto,
+      city: agency.city
     };
 
     res.status(200).json({
