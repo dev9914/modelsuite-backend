@@ -22,7 +22,7 @@ import agencyToModelMessageRoutes from './routes/message/agencyToModelMessageRou
 import topicRoutes from './routes/message/topicRoutes.js';
 import groupTopicMessageRoutes from './routes/message/groupTopicMessageRoutes.js';
 import taskRoutes from "./routes/task/taskRoutes.js";
-import metaRoutes from "./routes/socialMedia/metaRoutes.js";
+import instagramRoutes from './routes/socialMedia/instagramRoutes.js';
 
 app.use('/api/v1/model', modelRoutes);
 app.use('/api/v1/agency', agencyRoutes);
@@ -31,7 +31,8 @@ app.use('/api/v1/messages/agency-to-model', agencyToModelMessageRoutes);
 app.use('/api/v1/topic', topicRoutes);
 app.use('/api/v1/messages/group', groupTopicMessageRoutes);
 app.use("/api/v1/tasks", taskRoutes);
-app.use("/api/v1/meta", metaRoutes);
+app.use('/api/v1/instagram', instagramRoutes);
+
 
 // 🧠 Create HTTP Server
 const server = http.createServer(app);
