@@ -5,7 +5,7 @@ import jwt from 'jsonwebtoken';
 export const handleInstagramCallback = async (req, res) => {
   try {
     const { code, state: stateToken } = req.query;
-    const redirectUri = 'http://localhost:5000/api/v1/instagram/callback';
+    const redirectUri = `${process.env.SERVER_HOSTING_BASEURL}/instagram/callback`;
     const appId = process.env.META_APP_ID;
     const appSecret = process.env.META_APP_SECRET;
 
