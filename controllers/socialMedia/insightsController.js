@@ -3,7 +3,7 @@ import axios from 'axios';
 
 export const getInstagramAccountInfo = async (req, res) => {
   try {
-    const modelId = req.user.id;
+    const modelId = req.params.modelId;
 
     const account = await InstagramAccount.findOne({ modelId });
 
@@ -49,7 +49,7 @@ export const getInstagramAccountInfo = async (req, res) => {
 
 export const getInstagramInsights = async (req, res) => {
   try {
-    const modelId = req.user.id;
+    const modelId = req.params.modelId;
     const account = await InstagramAccount.findOne({ modelId });
 
     if (!account || !account.igId || !account.accessToken) {
@@ -88,7 +88,7 @@ export const getInstagramInsights = async (req, res) => {
 };
 export const getInstagramDemographics = async (req, res) => {
   try {
-    const modelId = req.user.id;
+    const modelId = req.params.modelId;
     const account = await InstagramAccount.findOne({ modelId });
 
     if (!account || !account.igId || !account.accessToken) {
@@ -137,7 +137,7 @@ export const getInstagramDemographics = async (req, res) => {
 
 export const getInstagramStoryInsights = async (req, res) => {
   try {
-    const modelId = req.user.id;
+    const modelId = req.params.modelId;
     const account = await InstagramAccount.findOne({ modelId });
 
     if (!account || !account.igId || !account.accessToken) {
@@ -196,7 +196,7 @@ export const getInstagramStoryInsights = async (req, res) => {
 
 export const disconnectInstagram = async (req, res) => {
   try {
-    const modelId = req.user.id;
+    const modelId = req.params.modelId;
 
     const account = await InstagramAccount.findOne({ modelId });
     if (!account) {

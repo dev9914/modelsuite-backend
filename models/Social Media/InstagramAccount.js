@@ -9,6 +9,7 @@ const instagramAccountSchema = new mongoose.Schema({
   },
   igId: String,
   fbPageId: String,
+  pageAccessToken: String,
   accessToken: String,
   tokenExpiresAt: Date,
 }, { timestamps: true });
