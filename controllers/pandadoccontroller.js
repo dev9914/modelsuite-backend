@@ -24,7 +24,7 @@ export const createDocument = async (req, res) => {
 
   const nameParts = recipientName.trim().split(" ");
   const firstName = nameParts[0];
-  const lastName = nameParts[1] || "User";
+  const lastName = nameParts[1] || "";
 
   try {
     const createRes = await axios.post(
@@ -41,6 +41,9 @@ export const createDocument = async (req, res) => {
           },
         ],
         send_email: false,
+        metadata: {
+      modelId: req.params.modelId, // You must send this from frontend
+    },
       },
       {
         headers: {
@@ -117,5 +120,29 @@ export const getDocumentById = async (req, res) => {
   }
 };
 
+export const getAllDocuments = async (req, res) => {
+  try {
+    const response = await axios.get(`${API}/documents`, {
+      headers: { Authorization: `API-Key ${TOKEN}` },
+    });
+    res.json(response.data);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+export const getDocumentsByModel = async (req, res) => {
+  const { modelId } = req.params;
+
+  try {
+    const response = await axios.get(`${API}/documents?metadata[modelId]=${modelId}`, {
+      headers: { Authorization: `API-Key ${TOKEN}` },
+    });
+
+    res.json(response.data);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
 
 
